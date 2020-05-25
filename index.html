@@ -29,7 +29,7 @@
 </body>
 <script>
 
-const socket = io('https://webgoionline.herokuapp.com/');
+const socket = io('http://192.168.100.4:3000/');
 
 $('#div-chat').hide();
 
@@ -59,7 +59,7 @@ function openStream() {
 }
 
 function playStream(idvideo, stream) {
-    let video = document.getElementById(idvideo);
+    const video = document.getElementById(idvideo);
     video.srcObject = stream;
     video.play();
 }
@@ -98,7 +98,6 @@ $('#uluser').on('click','li', function(){
     const id = $(this).attr('id');
     console.log(id);
     openStream().then(stream => {
-        playStream('localStream', stream);
         const call = peer.call(id, stream);
         call.on('stream', remotestream => { playStream('remoteStream', remotestream); });
     });
