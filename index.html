@@ -54,7 +54,7 @@ socket.on('DANG_KY_THAT_BAI', mess =>{
 
 // Mở stream
 function openStream() {
-    var config = { audio: true, video: true };
+    var config = { audio: false, video: true };
     return navigator.mediaDevices.getUserMedia(config);
 }
 
