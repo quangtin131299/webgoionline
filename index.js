@@ -1,5 +1,13 @@
 const io = require('socket.io')(3000);
 
+var express = require("express");
+var app = express();
+
+app.get('/' ,function(req, res){
+    res.sendFile(__dirname + '/index.html');
+});
+
+
 const arruserinfo = [];
 
 const arrsocket = [];
