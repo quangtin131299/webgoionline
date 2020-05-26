@@ -15,7 +15,6 @@
     <h3 id="myid"></h3>
         <video id="localStream" width="300" controls></video>
         <br />
-        <video id="remoteStream" width="300" controls></video>
         <input type="text" id="remoteid" placeholder="Remote id">
         <button id="btnCall">Call</button>
         <br />
@@ -48,7 +47,12 @@ $('#btnCall').click(function () {
 	let id = $('remoteid').val();
 	openStream().then(stream => {     
         const call = peer.call(id, stream);
-        call.on('stream', remotestream => { playStream('localStream', stream); });//playStream('remoteStream', remotestream) 
+		//playStream('localStream', stream);
+        call.on('stream', remotestream => {
+			const video = document.getElementById('localStream');
+			video.srcObject = stream;
+			video.play();
+		});//playStream('remoteStream', remotestream) 
     });
 });
 
@@ -57,7 +61,9 @@ peer.on('call', function(call) {
 	openStream().then(stream => {
         call.answer(stream);
         //playStream('localStream', stream);
-        call.on('stream', remotestream => {playStream('localStream', remotestream);});
+        call.on('stream', remotestream => {
+			console.log('ab');
+		});
     });
 });
 </script>
