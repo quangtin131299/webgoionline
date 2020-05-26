@@ -52,7 +52,6 @@ peer.on('open', function (id) {
 $('#btnCall').click(function () {
     const id = $('#remoteid').val();
     openStream().then(stream => {
-        playStream('localStream', stream);
         const call = peer.call(id, stream);
         call.on('stream', remotestream => { playStream('remoteStream', remotestream); });
     });
