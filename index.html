@@ -44,15 +44,12 @@ peer.on('open', function (id) {
 
 //Người gọi
 $('#btnCall').click(function () {
-	let id = $('remoteid').val();
-	openStream().then(stream => {     
+	const id = $('#remoteid').val();
+    openStream().then(stream => {
         const call = peer.call(id, stream);
-		//playStream('localStream', stream);
-        call.on('stream', remotestream => {
-			const video = document.getElementById('localStream');
-			video.srcObject = stream;
-			video.play();
-		});//playStream('remoteStream', remotestream) 
+        call.on('stream', function(remotestream){
+			playStream('localStream', remotestream);
+		});
     });
 });
 
@@ -60,9 +57,8 @@ $('#btnCall').click(function () {
 peer.on('call', function(call) {
 	openStream().then(stream => {
         call.answer(stream);
-        //playStream('localStream', stream);
-        call.on('stream', remotestream => {
-			console.log('ab');
+        call.on('stream', function(remotestream){
+			playStream('localStream', remotestream);
 		});
     });
 });
