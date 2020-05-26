@@ -14,9 +14,6 @@
 
 <body>
     <h3 id="myid"></h3>
-    <ul id="uluser"></ul>
-
-    <div id="div-chat">
         <video id="localStream" width="300" controls></video>
         <br />
         <video id="remoteStream" width="300" controls></video>
@@ -24,33 +21,8 @@
         <button id="btnCall">Call</button>
         <br />
     </div>
-    <input type="text" id="textusername" placeholder="Remote id" placeholder="enter your name">
-    <button id="btnSignup">Sign up</button>
 </body>
 <script>
-
-const socket = io('https://webgoionline.herokuapp.com/');
-
-$('#div-chat').hide();
-
-socket.on('DANH_SACH_ONLINE', arruserinfo => {
-        $('#div-chat').show();
-        $('#uluser').html('');
-        for(let i = 0; i < arruserinfo.length; i++){
-            let username = arruserinfo[i].ten;
-            let id = arruserinfo[i].peerid;
-            $('#uluser').html($('#uluser').html() +'<li id='+id+'>'+username+'</li>');        
-        }  
-               
-    
-});
-
-
-socket.on('DANG_KY_THAT_BAI', mess =>{
-    alert(mess);
-});
-
-
 
 // Mở stream
 function openStream() {
@@ -94,14 +66,7 @@ peer.on('call', call => {
     });
 });
 
-$('#uluser').on('click','li', function(){
-    const id = $(this).attr('id');
-    console.log(id);
-    openStream().then(stream => {
-        const call = peer.call(id, stream);
-        call.on('stream', remotestream => { playStream('remoteStream', remotestream); });
-    });
-});
+
 
 </script>
 
