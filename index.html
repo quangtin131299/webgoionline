@@ -58,8 +58,8 @@
 	//Người nhận
 	peer.on('call', call => {
 		openStream().then(stream => {
-			call.answer(stream);
 			playStream('localStream', stream);
+			call.answer(stream);
 			call.on('stream', remotestream => playStream('remoteStream', remotestream));
 		});
 	});
