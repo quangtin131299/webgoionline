@@ -59,7 +59,7 @@
 
 	//Người nhận
 	peer.on('call', call => {
-		openStream().then(stream => {
+		openStream().then(stream => { 
 			call.answer(stream);
 			playStream('localStream', stream);	
 			call.on('stream', remotestream => {			
