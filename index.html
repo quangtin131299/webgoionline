@@ -1,69 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <title>Khoa Pham WebRTC</title>
+        <script src="jquery.js"></script>
+        <script src="peer.js"></script>
+        <script src="socket.io.js"></script>
+    </head>
+    <body>
+        <div id="div-chat">
+            <p>Online user:</p>
+            <ul id="ulUser">
+            </ul>
+            <h3 id="my-peer">Your Id: </h3>
+            <video id="localStream" width="300" controls></video>
+            <br /><br />
+            <video id="remoteStream" width="300" controls></video>
+            <br /><br />
+            <input type="text" id="remoteId" placeholder="Remote ID">
+            <button id="btnCall">Call</button>
+        </div>
+        <div id="div-dang-ky">
+            <br /><br />
+            <input type="text" id="txtUsername" placeholder="Enter your username">
+            <button id="btnSignUp">Sign Up</button>
+        </div>
+    </body>
+    <script>
+	
+			function openStream() {
+				const config = { audio: false, video: true };
+				return navigator.mediaDevices.getUserMedia(config);
+			}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
-    <title>Document</title>
-</head>
+			function playStream(idVideoTag, stream) {
+				const video = document.getElementById(idVideoTag);
+				video.srcObject = stream;
+				video.play();
+			}
 
-<body>
-    <h3 id="myid"></h3>
-        <video id="localStream" width="300" controls></video>
-        <br />
-        <input type="text" id="remoteid" placeholder="Remote id">
-        <button id="btnCall">Call</button>
-        <br />
-    </div>
-</body>
-<script>
+			// openStream()
+			// .then(stream => playStream('localStream', stream));
 
-// Mở stream
-function openStream() {
-    var config = { audio: true, video: false};
-    return navigator.mediaDevices.getUserMedia(config);
-}
+			const peer = new Peer({ 
+				key: 'peerjs', 
+				host: 'mypeer3005.herokuapp.com', 
+				secure: true, 
+				port: 443, 
+				config: customConfig 
+			});
 
-function playStream(idvideo, stream) {
-    const video = document.getElementById(idvideo);
-    video.srcObject = stream;
-    video.play();
-}
+			peer.on('open', id => {
+				$('#my-peer').append(id);
+				$('#btnSignUp').click(() => {
+					const username = $('#txtUsername').val();
+					socket.emit('NGUOI_DUNG_DANG_KY', { ten: username, peerId: id });
+				});
+			});
 
-var peer = new Peer({host:'peerjs-server.herokuapp.com', secure:true, port:443});
+			//Caller
+			$('#btnCall').click(() => {
+				const id = $('#remoteId').val();
+				openStream()
+				.then(stream => {
+					playStream('localStream', stream);
+					const call = peer.call(id, stream);
+					call.on('stream', remoteStream => playStream('remoteStream', remoteStream));
+				});
+			});
 
-var idtemp = null;
-peer.on('open', function (id) {
-    idtemp = id;
-    $('#myid').html("Your id: " + id);
-});
+			//Callee
+			peer.on('call', call => {
+				openStream()
+				.then(stream => {
+					call.answer(stream);
+					playStream('localStream', stream);
+					call.on('stream', remoteStream => playStream('remoteStream', remoteStream));
+				});
+			});
 
-//Người gọi
-$('#btnCall').click(function () {
-	const id = $('#remoteid').val();
-    openStream().then(stream => {
-        const call = peer.call(id, stream);
-		playStream('localStream', stream);
-        call.on('stream', function(remotestream){
-			playStream('localStream', remotestream);
-		});
-    });
-});
+			$('#ulUser').on('click', 'li', function() {
+				const id = $(this).attr('id');
+				console.log(id);
+				openStream()
+				.then(stream => {
+					playStream('localStream', stream);
+					const call = peer.call(id, stream);
+					call.on('stream', remoteStream => playStream('remoteStream', remoteStream));
+				});
+			});
 
-
-peer.on('call', function(call) {
-	openStream().then(stream => {
-        call.answer(stream);
-		playStream('localStream', stream);
-        call.on('stream', function(remotestream){
-			playStream('localStream', remotestream);
-		});
-    });
-});
 </script>
-
 </html>
