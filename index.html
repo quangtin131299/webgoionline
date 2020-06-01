@@ -38,8 +38,7 @@ function openStream(cof) {
 
 function playStream(idvideo, stream) {
     const video = document.getElementById(idvideo);
-    video.srcObject = stream;
-    
+    video.srcObject = stream;  
     video.play();
 }
 
@@ -61,10 +60,8 @@ $('#btnCall').click(function () {
     openStream({ audio: true, video: false }).then(stream => {   
 		playStream('localStream', stream);	
         const call = peer.call(id, stream);	
-        call.on('stream', remotestream => { 
-			
-				playStream('remoteStream', remotestream);
-			 
+        call.on('stream', remotestream => { 			
+			playStream('remoteStream', remotestream);
 		});
     });
 });
@@ -75,9 +72,7 @@ peer.on('call', call => {
         call.answer(stream);
 		playStream('localStream', stream);
         call.on('stream', remotestream => {
-			
-				playStream('remoteStream', remotestream);
-			
+			playStream('remoteStream', remotestream);			
 		});
 	});
 });
