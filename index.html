@@ -17,7 +17,7 @@
     <ul id="uluser"></ul>
 
     <div id="div-chat">
-        <video id="localStream" width="300" controls></video>
+        <video id="localStream" width="300" controls muted></video>
         <br />
         <video id="remoteStream" width="300" controls></video>
         <input type="text" id="remoteid" placeholder="Remote id">
@@ -28,17 +28,15 @@
     <button id="btnSignup">Sign up</button>
 </body>
 <script>
-	
-
-// Mở stream
-function openStream() {
+	function openStream() {
     var config = { audio: true, video: true };
     return navigator.mediaDevices.getUserMedia(config);
 }
 
 function playStream(idvideo, stream) {
     const video = document.getElementById(idvideo);
-    video.srcObject = stream;  
+    video.srcObject = stream;
+    
     video.play();
 }
 
@@ -48,6 +46,10 @@ var idtemp = null;
 peer.on('open', function (id) {
     idtemp = id;
     $('#myid').html("Your id: " + id);
+    $('#btnSignup').click(function(){
+        const username = $('#textusername').val();
+        socket.emit('NGUOI_DUNG_DANG_KY', {ten: username, peerid: id});
+    });
 });
 
 //Người gọi
@@ -56,17 +58,16 @@ $('#btnCall').click(function () {
     openStream().then(stream => {
         playStream('localStream', stream);
         const call = peer.call(id, stream);
-        call.on('stream', remotestream => { playStream('remoteStream', remotestream);});
+        call.on('stream', remotestream => { playStream('remoteStream', remotestream) });
     });
 });
 
 //Người nhận
 peer.on('call', call => {
-     openStream().then(stream => {
-		
+    openStream().then(stream => {
         call.answer(stream);
-		playStream('localStream', stream);
-        call.on('stream', remotestream => {playStream('remoteStream', remotestream);});
+        playStream('localStream', stream);
+        call.on('stream', remotestream => playStream('remoteStream', remotestream));
     });
 });
 
