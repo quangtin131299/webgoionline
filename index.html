@@ -1,6 +1,4 @@
-<!DOCTYPE html 
-      PUBLIC "-//W3C//DTD HTML 4.01//EN"
-      "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -13,9 +11,7 @@
 </head>
 
 <body>
-    <h3 id="myid"></h3>
-    <ul id="uluser"></ul>
-
+	<h3 id="myid"></h3>
     <div id="div-chat">
         <video id="localStream" width="300" controls></video>
         <br/>
@@ -24,8 +20,6 @@
         <button id="btnCall">Call</button>
         <br/>
     </div>
-    <input type="text" id="textusername" placeholder="Remote id" placeholder="enter your name">
-    <button id="btnSignup">Sign up</button>
 </body>
 <script>
 	// Mở stream
@@ -47,10 +41,6 @@ var idtemp = null;
 peer.on('open', function (id) {
     idtemp = id;
     $('#myid').html("Your id: " + id);
-    $('#btnSignup').click(function(){
-        const username = $('#textusername').val();
-        socket.emit('NGUOI_DUNG_DANG_KY', {ten: username, peerid: id});
-    });
 });
 
 //Người gọi
@@ -59,7 +49,9 @@ $('#btnCall').click(function () {
     openStream().then(stream => {
         playStream('localStream', stream);
         const call = peer.call(id, stream);
-        call.on('stream', remotestream => playStream('remoteStream', remotestream));
+        call.on('stream', remotestream => {
+			playStream('remoteStream', remotestream);
+		});
     });
 });
 
@@ -68,7 +60,9 @@ peer.on('call', call => {
     openStream().then(stream => {
         call.answer(stream);
         playStream('localStream', stream);
-        call.on('stream', remotestream => playStream('remoteStream', remotestream));
+        call.on('stream', remotestream => {
+			playStream('remoteStream', remotestream)
+		});
     });
 });
 
