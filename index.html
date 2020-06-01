@@ -35,7 +35,7 @@
 
 function playStream(idvideo, stream) {
     const video = document.getElementById(idvideo);
-    video.srcObject = stream;
+    video.src = stream;
     
     video.play();
 }
