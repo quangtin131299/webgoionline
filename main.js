@@ -13,7 +13,7 @@ function playStream(idvideo, stream) {
     video.play();
 }
 
-var peer = new Peer({host:'peerjs-server.herokuapp.com', secure:true, port:443});
+var peer = new Peer({key:'peerjs',host:'peerjs-server.herokuapp.com', secure:true, port:443});
 
 var idtemp = null;
 peer.on('open', function (id) {
