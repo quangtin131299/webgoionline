@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="peer.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"> </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
@@ -16,7 +17,7 @@
     <ul id="uluser"></ul>
 
     <div id="div-chat">
-        <video id="localStream" width="300" controls ></video>
+        <video id="localStream" width="300" controls></video>
         <br />
         <video id="remoteStream" width="300" controls></video>
         <input type="text" id="remoteid" placeholder="Remote id">
@@ -34,19 +35,9 @@
 
 function playStream(idvideo, stream) {
     const video = document.getElementById(idvideo);
-    video.srcObject  = stream;
-  
-    var playPromise = video.play();
-
-	if (playPromise !== undefined) {
-			playPromise.then(_ => {
-		  // Automatic playback started!
-		  // Show playing UI.
-		})
-		.catch(error => {
-			console.log('abc');
-		});
-	}
+    video.srcObject = stream;
+    
+    video.play();
 }
 
 var peer = new Peer({host:'peerjs-server.herokuapp.com', secure:true, port:443});
@@ -67,7 +58,7 @@ $('#btnCall').click(function () {
     openStream().then(stream => {
         playStream('localStream', stream);
         const call = peer.call(id, stream);
-        call.on('stream', remotestream => { playStream('remoteStream', remotestream); });
+        call.on('stream', remotestream => { playStream('remoteStream', remotestream) });
     });
 });
 
@@ -76,10 +67,19 @@ peer.on('call', call => {
     openStream().then(stream => {
         call.answer(stream);
         playStream('localStream', stream);
-        call.on('stream', remotestream => {playStream('remoteStream', remotestream);});
+        call.on('stream', remotestream => playStream('remoteStream', remotestream));
     });
 });
 
+$('#uluser').on('click','li', function(){
+    const id = $(this).attr('id');
+    console.log(id);
+    openStream().then(stream => {
+        playStream('localStream', stream);
+        const call = peer.call(id, stream);
+        call.on('stream', remotestream => { playStream('remoteStream', remotestream); });
+    });
+});
 </script>
 
 </html>
