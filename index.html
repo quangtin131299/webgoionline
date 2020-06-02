@@ -23,25 +23,24 @@
 </body>
 <script>
 
-	let customConfig;
-
-	$.ajax({
-	  url: "https://service.xirsys.com/ice",
-	  data: {
-		ident: "quangtin",
-		secret: "5838cc38-a475-11ea-8850-0242ac150003",
-		domain: "webgoionline.herokuapp.com",
-		application: "default",
-		room: "default",
-		secure: 1
-	  },
-	  success: function (data, status) {
-		// data.d is where the iceServers object lives
-		customConfig = data.d;
-		console.log(customConfig);
-	  },
-	  async: false
-	});
+	var servers;
+                $.ajax({
+                  type: 'POST',
+                  url: 'https://service.xirsys.com/ice',
+                  data: {
+                    room: 'default',
+                    application: 'MyFirstApp',
+                    domain: 'https://webgoionline.herokuapp.com/',
+                    ident: 'quangtin',
+                    secret: '5838cc38-a475-11ea-8850-0242ac150003',
+                  },
+                  success: function(res) {
+                    res = JSON.parse(res);
+                    if (!res.e) servers = res.d.iceServers;
+					console.log(server);
+                  },
+                  async: false
+                });
 	
 		// Mở stream
 	function openStream() {
