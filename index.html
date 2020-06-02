@@ -25,7 +25,7 @@
 </body>
 <script>
 	
-	<script>
+	
       window.onload = function() {
          let xhr = new XMLHttpRequest();
          xhr.onreadystatechange = function($evt){
@@ -39,8 +39,7 @@
          xhr.setRequestHeader ({"Content-Type": "application/json"});
          xhr.send( JSON.stringify({"format": "urls"}) );
       };
-  </script>
-
+  
 	// Mở stream
 	function openStream() {
 		var config = { audio: false, video: true };
