@@ -55,7 +55,7 @@
 		video.play();
 	}
 
-	var peer = new Peer({host:'peerjs-server.herokuapp.com', secure:true, port:443, config: customConfig});
+	var peer = new Peer({host:'peerjs-server.herokuapp.com', secure:true, port:443, config: servers});
 
 	var idtemp = null;
 	peer.on('open', function (id) {
